@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
-export const interactiveExperiences = [];
+const interactiveExperiences = [];
+const interactiveProjects = []; 
 const activationDistance = 3.5;
 
 export function createExperienceNode(scene, role, company, description, x, z) {
@@ -43,6 +44,34 @@ export function createExperienceNode(scene, role, company, description, x, z) {
     });
 }
 
+
+export function createProjectNode(scene, title, description, x, z) {
+    const group = new THREE.Group();
+    group.position.set(x, 0.5, z); 
+
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshStandardMaterial({ color: 0x00ffff, wireframe: true });
+    const mesh = new THREE.Mesh(geometry, material);
+    group.add(mesh);
+
+    const div = document.createElement('div');
+    div.className = 'project-label'; 
+    div.innerHTML = `
+        <h3>${title}</h3>
+        <p>${description}</p>
+        <button>View on GitHub</button>
+    `;
+    
+    const label = new CSS2DObject(div);
+    label.position.set(0, 1.5, 0); 
+    group.add(label);
+
+    scene.add(group);
+    interactiveProjects.push({ group, htmlElement: div });
+}
+
+
+
 // --- TYPING ANIMATION ENGINE ---
 export function startTyping(expData) {
     expData.textBody.innerHTML = '';
@@ -73,29 +102,36 @@ export function stopTyping(expData) {
 // --- PROXIMITY CHECK (Call this in your animation loop) ---
 export function checkExperienceProximity(player) {
     interactiveExperiences.forEach(exp => {
-        const distance = player.position.distanceTo(exp.group.position);
-        
+        checkProximity(player, exp);
+    });
+    interactiveProjects.forEach(project => {
+        checkProximity(player, project);
+    });
+}
+
+function checkProximity(player, object) {
+        const distance = player.position.distanceTo(object.group.position);
         if (distance < activationDistance) {
             // Fast, chaotic spin when active
-            exp.group.children[0].rotation.y += 0.05; 
-            exp.group.children[0].rotation.x += 0.02;
+            object.group.children[0].rotation.y += 0.05; 
+            object.group.children[0].rotation.x += 0.02;
 
             // Trigger typing only ONCE when entering radius
-            if (!exp.wasActive) {
-                exp.wasActive = true;
-                exp.htmlElement.classList.add('visible');
-                startTyping(exp);
+            if (!object.wasActive) {
+                object.wasActive = true;
+                object.htmlElement.classList.add('visible');
+                startTyping(object);
             }
         } else {
             // Slow idle spin
-            exp.group.children[0].rotation.y += 0.01;
+            object.group.children[0].rotation.y += 0.01;
 
             // Stop typing and clear when exiting radius
-            if (exp.wasActive) {
-                exp.wasActive = false;
-                exp.htmlElement.classList.remove('visible');
-                stopTyping(exp);
+            if (object.wasActive) {
+                object.wasActive = false;
+                object.htmlElement.classList.remove('visible');
+                stopTyping(object);
             }
         }
-    });
+
 }

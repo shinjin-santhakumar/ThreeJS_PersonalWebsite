@@ -6,8 +6,7 @@ import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { player, radius, initControls, updatePlayer, resetPlayerPosition } from './components/player.js';
 import { initTrail, updateTrail, trailMaterial } from './components/trail.js';
 import { initEnvironment, createGroundText, floorSigns, stars } from './components/environment.js';
-import { createProjectNode, checkProximity } from './components/projects.js';
-import { createExperienceNode, checkExperienceProximity} from './components/exp.js';
+import { createExperienceNode, checkExperienceProximity, createProjectNode} from './components/exp.js';
 import { createLandingNode, updateLandingNode } from './components/landing.js';
 
 
@@ -80,7 +79,6 @@ function animate() {
     // Update Modules
     updatePlayer(camera);
     updateTrail(player);
-    checkProximity(player);
     checkExperienceProximity(player);
 
     updateLandingNode(landingGroup);
