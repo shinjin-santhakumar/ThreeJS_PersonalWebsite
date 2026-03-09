@@ -148,3 +148,119 @@ button:focus-visible {
   background-color: #ff00ff;
   color: #000;
 }
+
+/* --- HACKER TERMINAL EXPERIENCE LABEL (GREEN) --- */
+.experience-label {
+  background: rgba(0, 15, 0, 0.9); /* Deep dark green/black */
+  color: #00ff00; /* Hacker green */
+  padding: 15px;
+  border: 1px solid #00ff00;
+  box-shadow:
+    0 0 15px rgba(0, 255, 0, 0.4),
+    inset 0 0 10px rgba(0, 255, 0, 0.2);
+  width: 300px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  transform-origin: center bottom;
+}
+
+/* Toggled by JavaScript when player is close */
+.experience-label.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* The fake file path at the top of the terminal */
+.terminal-header {
+  font-size: 0.8em;
+  color: #aaaaaa;
+  border-bottom: 1px dashed #00ff00;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+/* The body text container */
+.terminal-body {
+  line-height: 1.5;
+  white-space: pre-wrap; /* CRITICAL: Tells CSS to respect \n line breaks */
+}
+
+/* The blinking underscore cursor */
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* --- LANDING / TUTORIAL LABEL --- */
+.landing-label {
+  text-align: center;
+  color: #ffffff;
+  pointer-events: none; /* Let clicks pass through to the 3D canvas */
+  width: 400px;
+  text-shadow: 0 0 10px #00ffff;
+}
+
+.landing-label h1 {
+  font-size: 2em;
+  margin-bottom: 5px;
+  letter-spacing: 2px;
+}
+
+.landing-label h1 span {
+  color: #ff00ff; /* Highlight your name in magenta */
+  text-shadow: 0 0 15px #ff00ff;
+}
+
+.controls-instruction {
+  margin-top: 30px;
+  transition: all 0.5s ease-out;
+}
+
+/* --- KEYBOARD KEYS UI --- */
+.keys-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.key-row {
+  display: flex;
+  gap: 5px;
+}
+
+.key-badge {
+  background: rgba(10, 10, 25, 0.8);
+  color: #00ffff;
+  border: 2px solid #00ffff;
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.2em;
+  box-shadow:
+    0 4px 0 rgba(0, 255, 255, 0.4),
+    0 0 10px #00ffff;
+  transition: all 0.2s ease-out;
+}
+
+/* The state triggered by JavaScript when a key is pressed */
+.key-badge.pressed {
+  opacity: 0;
+  transform: translateY(10px) scale(0.8); /* Shrinks and drops down */
+  box-shadow: 0 0 0 transparent;
+}
