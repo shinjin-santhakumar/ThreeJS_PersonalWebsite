@@ -264,3 +264,59 @@ button:focus-visible {
   transform: translateY(10px) scale(0.8); /* Shrinks and drops down */
   box-shadow: 0 0 0 transparent;
 }
+
+/* --- HACKER CONTACT FORM --- */
+.hacker-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  color: #00ff00;
+  font-size: 0.9em;
+  min-height: 1.2em; /* Prevents jumping layout before text is typed */
+}
+
+.hacker-input {
+  background: rgba(0, 20, 0, 0.5);
+  border: 1px solid #005500;
+  color: #00ff00;
+  padding: 8px;
+  font-family: "Courier New", Courier, monospace;
+  outline: none;
+  transition:
+    opacity 0.4s ease,
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+.hacker-input:focus {
+  border-color: #00ff00;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+.hacker-btn {
+  background: transparent;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 10px;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 5px;
+}
+
+.hacker-btn:hover {
+  background: #00ff00;
+  color: #000;
+  box-shadow: 0 0 15px #00ff00;
+}

@@ -8,6 +8,7 @@ import { initTrail, updateTrail, trailMaterial } from './components/trail.js';
 import { initEnvironment, createGroundText, floorSigns, stars } from './components/environment.js';
 import { createExperienceNode, checkExperienceProximity, createProjectNode} from './components/exp.js';
 import { createLandingNode, updateLandingNode } from './components/landing.js';
+import { createContactNode, checkContactProximity } from './components/contact.js';
 
 
 // --- CORE SETUP ---
@@ -35,8 +36,10 @@ initEnvironment(scene);
 const landingGroup = createLandingNode(scene, "John Doe", 0 , 0);
 
 // Spawn Level Data
-createGroundText(scene, "// PROJECT_ZONE", 7, -1);
-createGroundText(scene, "// WORK_EXPERIENCE", 18, -1);
+createGroundText(scene, "// PROJECT_ZONE", 10, -1);
+createGroundText(scene, "// WORK_EXPERIENCE", 10, -10);
+createGroundText(scene, "// HOBBY_LOBBY", -10, -1);
+createGroundText(scene, "// CONTACT_ME", -10, -10);
 
 
 createProjectNode(scene, "Cyber AI", "Machine learning python script", 5, -5);
@@ -44,8 +47,11 @@ createProjectNode(scene, "E-Commerce API", "Built with Node.js and Stripe", 10, 
 createProjectNode(scene, "React Dashboard", "Real-time data visualization", 15, -5);
 
 
-createExperienceNode(scene, "Frontend Dev", "Tech Corp", "Led React migration, improved performance by 40%.", 15, -5);
-createExperienceNode(scene, "Systems Admin", "CyberSec Inc.", "Maintained Linux servers and wrote bash automation scripts.", 20, -5);
+createExperienceNode(scene, "Software Engineer Intern", "Appriss Retail", "Led React migration, improved performance by 40%.", 8, -14);
+createExperienceNode(scene, "Systems Admin", "CyberSec Inc.", "Maintained Linux servers and wrote bash automation scripts.", 12, -14);
+
+createContactNode(scene, -10, -14);
+
 
 // --- UI LOGIC ---
 const resetBtn = document.getElementById('reset-btn');
@@ -77,9 +83,13 @@ function animate() {
     requestAnimationFrame(animate);
 
     // Update Modules
-    updatePlayer(camera);
+    const activeTag = document.activeElement ? document.activeElement.tagName : '';
+    if (activeTag !== 'INPUT' && activeTag !== 'TEXTAREA') {
+        updatePlayer(camera);
+    }
     updateTrail(player);
     checkExperienceProximity(player);
+    checkContactProximity(player);
 
     updateLandingNode(landingGroup);
     // Update Static Animations

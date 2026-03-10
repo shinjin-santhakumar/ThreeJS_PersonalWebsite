@@ -23,7 +23,7 @@ export function createExperienceNode(scene, role, company, description, x, z) {
     const fullText = `> ROLE: ${role}\n> COMP: ${company}\n> DESC: ${description}`;
 
     div.innerHTML = `
-        <div class="terminal-header">root@system:~/experience$ ./view.sh</div>
+        <div class="terminal-header">root@system:~/experiences$ ./view.sh</div>
         <div class="terminal-body"></div><span class="cursor-blink">_</span>
     `;
     
@@ -55,19 +55,28 @@ export function createProjectNode(scene, title, description, x, z) {
     group.add(mesh);
 
     const div = document.createElement('div');
-    div.className = 'project-label'; 
+    div.className = 'experience-label'; 
+
+    const fullText = `> Project: ${title}\n> Description: ${description}`;
+
     div.innerHTML = `
-        <h3>${title}</h3>
-        <p>${description}</p>
-        <button>View on GitHub</button>
+        <div class="terminal-header">root@system:~/projects$ ./view.sh</div>
+        <div class="terminal-body"></div><span class="cursor-blink">_</span>
     `;
-    
+    //<button>View on GitHub</button>
     const label = new CSS2DObject(div);
     label.position.set(0, 1.5, 0); 
     group.add(label);
 
     scene.add(group);
-    interactiveProjects.push({ group, htmlElement: div });
+    interactiveProjects.push({ 
+        group, 
+        htmlElement: div,
+        textBody: div.querySelector('.terminal-body'),
+        fullText: fullText,
+        wasActive: false,
+        typeTimer: null
+    });
 }
 
 
