@@ -3,6 +3,8 @@ import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 const interactiveExperiences = [];
 const interactiveProjects = []; 
+const interactiveHobbies = [];
+const interactiveResumes = [];
 const activationDistance = 3.5;
 
 export function createExperienceNode(scene, role, company, description, x, z) {
@@ -62,6 +64,7 @@ export function createProjectNode(scene, title, description, x, z) {
     div.innerHTML = `
         <div class="terminal-header">root@system:~/projects$ ./view.sh</div>
         <div class="terminal-body"></div><span class="cursor-blink">_</span>
+        <button class="github-btn" hidden>View on GitHub</button>
     `;
     //<button>View on GitHub</button>
     const label = new CSS2DObject(div);
@@ -74,33 +77,134 @@ export function createProjectNode(scene, title, description, x, z) {
         htmlElement: div,
         textBody: div.querySelector('.terminal-body'),
         fullText: fullText,
+        button: div.querySelector('.github-btn'),
         wasActive: false,
         typeTimer: null
     });
 }
 
+export function createHobbyNode(scene, title, description, x, z) {
+    // TODO
+    const group = new THREE.Group();
+    group.position.set(x, 0.5, z); 
 
+    const geometry = new THREE.IcosahedronGeometry(1, 0);
+    const material = new THREE.MeshStandardMaterial({ color: 0x00ffff, wireframe: true });
+    const mesh = new THREE.Mesh(geometry, material);
+    group.add(mesh);
+
+
+
+    const div = document.createElement('div');
+    div.className = 'experience-label'; 
+
+    div.innerHTML = `
+        <div class="terminal-header">root@system:~/hobbies$ ./view.sh</div>
+        <div class="terminal-body"></div><span class="cursor-blink">_</span>
+    `;
+
+    const fullText = `> Hobby: ${title}\n> Description: ${description}`;
+
+    //<button>View on GitHub</button>
+    const label = new CSS2DObject(div);
+    label.position.set(0, 1.5, 0); 
+    group.add(label);
+
+    scene.add(group);
+    interactiveHobbies.push({ 
+        group, 
+        htmlElement: div,
+        textBody: div.querySelector('.terminal-body'),
+        fullText: fullText,
+        wasActive: false,
+        typeTimer: null
+    });
+}
+
+export function createResumeNode(scene, resumeUrl, description, x, z) {
+    const group = new THREE.Group();
+    group.position.set(x, 0.5, z); 
+
+    // A unique shape for the Resume node
+    const geometry = new THREE.DodecahedronGeometry(0.8);
+    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00, wireframe: true });
+    const mesh = new THREE.Mesh(geometry, material);
+    group.add(mesh);
+
+    const div = document.createElement('div');
+    div.className = 'experience-label resume-node'; 
+
+    const fullText = `> Executing: cat resume.pdf\n> Status: Decrypting...\n> Info: ${description}`;
+
+    div.innerHTML = `
+        <div class="terminal-header">root@system:~/resume$ ./view_resume.sh</div>
+        <div class="terminal-body"></div><span class="cursor-blink">_</span>
+        
+        <div class="resume-viewer" hidden>
+            <iframe src="${resumeUrl}#toolbar=0&navpanes=0" class="hacker-iframe"></iframe>
+            <div class="resume-controls">
+                <button class="github-btn expand-btn">Expand</button>
+                <button class="github-btn popout-btn">New Tab</button>
+            </div>
+        </div>
+    `;
+
+    const label = new CSS2DObject(div);
+    label.position.set(0, 1.5, 0); 
+    group.add(label);
+    scene.add(group);
+
+    // --- Button Logic ---
+    const expandBtn = div.querySelector('.expand-btn');
+    const popoutBtn = div.querySelector('.popout-btn');
+
+    // Popout opens the PDF in a new browser tab
+    popoutBtn.addEventListener('click', () => window.open(resumeUrl, '_blank'));
+
+    // Expand toggles a CSS class to make the CSS2DObject bigger
+    expandBtn.addEventListener('click', () => {
+        div.classList.toggle('expanded');
+        expandBtn.textContent = div.classList.contains('expanded') ? 'Collapse' : 'Expand';
+    });
+
+    interactiveResumes.push({ 
+        group, 
+        htmlElement: div,
+        textBody: div.querySelector('.terminal-body'),
+        fullText: fullText,
+        // We pass the whole viewer container as "button" so your existing proximity check unhides it!
+        button: div.querySelector('.resume-viewer'), 
+        wasActive: false,
+        typeTimer: null
+    });
+}
 
 // --- TYPING ANIMATION ENGINE ---
 export function startTyping(expData) {
-    expData.textBody.innerHTML = '';
-    let i = 0;
-    const text = expData.fullText;
+    return new Promise((resolve) => {
+        expData.textBody.innerHTML = '';
+        let i = 0;
+        const text = expData.fullText;
 
-    function typeChar() {
-        if (i < text.length) {
-            if (text.charAt(i) === '\n') {
-                expData.textBody.innerHTML += '<br/>';
+        function typeChar() {
+            
+            if (i < text.length) {
+                if (text.charAt(i) === '\n') {
+                    expData.textBody.innerHTML += '<br/>';
+                } else {
+                    expData.textBody.innerHTML += text.charAt(i);
+                }
+                i++;
+                // Speed is randomized slightly to feel like human typing
+                const speed = Math.random() * 30 + 10; 
+                expData.typeTimer = setTimeout(typeChar, speed);
             } else {
-                expData.textBody.innerHTML += text.charAt(i);
+                resolve();
             }
-            i++;
-            // Speed is randomized slightly to feel like human typing
-            const speed = Math.random() * 30 + 10; 
-            expData.typeTimer = setTimeout(typeChar, speed);
         }
-    }
-    typeChar();
+        typeChar();
+    });
+
 }
 
 export function stopTyping(expData) {
@@ -116,9 +220,13 @@ export function checkExperienceProximity(player) {
     interactiveProjects.forEach(project => {
         checkProximity(player, project);
     });
+    interactiveHobbies.forEach(hobby => {
+        checkProximity(player, hobby);
+    });
+    interactiveResumes.forEach(resume => checkProximity(player, resume));
 }
 
-function checkProximity(player, object) {
+async function checkProximity(player, object) {
         const distance = player.position.distanceTo(object.group.position);
         if (distance < activationDistance) {
             // Fast, chaotic spin when active
@@ -129,7 +237,12 @@ function checkProximity(player, object) {
             if (!object.wasActive) {
                 object.wasActive = true;
                 object.htmlElement.classList.add('visible');
-                startTyping(object);
+                await startTyping(object);
+
+                if (object.button) {
+                    object.button.hidden = false;
+                }
+                //object.button.hidden = false;
             }
         } else {
             // Slow idle spin
@@ -140,6 +253,9 @@ function checkProximity(player, object) {
                 object.wasActive = false;
                 object.htmlElement.classList.remove('visible');
                 stopTyping(object);
+                if (object.button) {
+                    object.button.hidden = true;
+                }
             }
         }
 

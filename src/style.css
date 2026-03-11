@@ -320,3 +320,158 @@ button:focus-visible {
   color: #000;
   box-shadow: 0 0 15px #00ff00;
 }
+
+/* Container that scales during the animation */
+.crt-screen {
+  transform-origin: center center;
+}
+
+/* CRT Turn Off Animation */
+.crt-off {
+  animation: crt-power-off 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* CRT Turn On Animation */
+.crt-on {
+  animation: crt-power-on 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes crt-power-off {
+  0% {
+    transform: scale(1, 1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  40% {
+    transform: scale(1, 0.005);
+    opacity: 1;
+    filter: brightness(2) drop-shadow(0 0 10px #00ff00);
+  }
+  100% {
+    transform: scale(0, 0);
+    opacity: 0;
+    filter: brightness(2);
+  }
+}
+
+@keyframes crt-power-on {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0;
+    filter: brightness(2) drop-shadow(0 0 10px #00ff00);
+  }
+  60% {
+    transform: scale(1, 0.005);
+    opacity: 1;
+    filter: brightness(2) drop-shadow(0 0 10px #00ff00);
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+.github-btn {
+  background: transparent;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  font-family: "Courier New", Courier, monospace;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  width: 100%;
+  margin-top: 10px;
+
+  /* The Transition: snap-into-place feel */
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Hidden state override */
+.github-btn[hidden] {
+  display: block !important; /* Required to allow transitions */
+  opacity: 0;
+  transform: translateY(15px); /* Slides up from 15px below */
+  pointer-events: none;
+  border-color: rgba(0, 255, 0, 0); /* Border fades in too */
+}
+
+/* Hover & Interaction */
+.github-btn:hover {
+  background: rgba(0, 255, 0, 0.2); /* Slight glow background */
+  box-shadow:
+    0 0 15px #00ff00,
+    inset 0 0 5px #00ff00;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+.github-btn:active {
+  background: #00ff00;
+  color: #000;
+  transform: scale(0.95); /* Slight "press" effect */
+}
+
+/* Container that holds the iframe and buttons */
+.resume-viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+
+  /* Inherit the snappy transition you made earlier */
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.resume-viewer[hidden] {
+  display: flex !important;
+  opacity: 0;
+  transform: translateY(15px);
+  pointer-events: none;
+}
+
+/* The PDF Iframe */
+.hacker-iframe {
+  width: 100%;
+  height: 200px;
+  border: 1px solid #00ff00;
+  box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
+  background: #000;
+  transition: height 0.3s ease;
+}
+
+/* Optional: This CSS filter makes the PDF look like a green terminal monitor! */
+/* Remove it if you want your PDF to look normal/white */
+.hacker-iframe {
+  filter: grayscale(1) sepia(1) hue-rotate(70deg) contrast(1.5) invert(1);
+}
+
+/* Flexbox for side-by-side buttons */
+.resume-controls {
+  display: flex;
+  gap: 10px;
+}
+
+/* Override the width so they sit next to each other */
+.resume-controls .github-btn {
+  margin-top: 0;
+  flex: 1;
+}
+
+/* The Expanded State */
+.resume-node.expanded {
+  width: 600px; /* Expands the whole 3D label */
+  transform: translateY(-50px); /* Nudges it up so it doesn't clip the floor */
+}
+
+.resume-node.expanded .hacker-iframe {
+  height: 600px; /* Makes the PDF much taller */
+}

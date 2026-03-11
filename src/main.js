@@ -6,7 +6,7 @@ import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { player, radius, initControls, updatePlayer, resetPlayerPosition } from './components/player.js';
 import { initTrail, updateTrail, trailMaterial } from './components/trail.js';
 import { initEnvironment, createGroundText, floorSigns, stars } from './components/environment.js';
-import { createExperienceNode, checkExperienceProximity, createProjectNode} from './components/exp.js';
+import { createExperienceNode, checkExperienceProximity, createProjectNode, createHobbyNode, createResumeNode } from './components/exp.js';
 import { createLandingNode, updateLandingNode } from './components/landing.js';
 import { createContactNode, checkContactProximity } from './components/contact.js';
 
@@ -33,13 +33,14 @@ initControls();
 initTrail(scene, player);
 initEnvironment(scene);
 
-const landingGroup = createLandingNode(scene, "John Doe", 0 , 0);
+const landingGroup = createLandingNode(scene, "Shinjin Santhakumar", 0 , 0);
 
 // Spawn Level Data
 createGroundText(scene, "// PROJECT_ZONE", 10, -1);
 createGroundText(scene, "// WORK_EXPERIENCE", 10, -10);
 createGroundText(scene, "// HOBBY_LOBBY", -10, -1);
 createGroundText(scene, "// CONTACT_ME", -10, -10);
+createGroundText(scene, "// RESUME", 0, -15);
 
 
 createProjectNode(scene, "Cyber AI", "Machine learning python script", 5, -5);
@@ -49,6 +50,11 @@ createProjectNode(scene, "React Dashboard", "Real-time data visualization", 15, 
 
 createExperienceNode(scene, "Software Engineer Intern", "Appriss Retail", "Led React migration, improved performance by 40%.", 8, -14);
 createExperienceNode(scene, "Systems Admin", "CyberSec Inc.", "Maintained Linux servers and wrote bash automation scripts.", 12, -14);
+
+createHobbyNode(scene, "Gaming", "PC, PS4, Xbox, Switch", -10 , -5);
+
+createResumeNode(scene, "https://docs.google.com/document/d/1" , "Resume" , 0, -16);
+
 
 createContactNode(scene, -10, -14);
 
