@@ -1,26 +1,26 @@
 import * as THREE from 'three';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
-export function createLandingNode(scene, name = "Your Name", x = 0, z = -4) {
+export function createLandingNode(scene, name = "Your Name", x = 0, z = 0) {
     const group = new THREE.Group();
     // Position it slightly in front of the starting point (0,0,0)
     group.position.set(x, 0, z); 
 
     // Create a subtle glowing pedestal for the text to hover over
-    const mesh = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.5, 1.5, 0.2, 16),
-        new THREE.MeshStandardMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.3 })
-    );
-    group.add(mesh);
+    // const mesh = new THREE.Mesh(
+    //     new THREE.CylinderGeometry(1.5, 1.5, 0.2, 16),
+    //     new THREE.MeshStandardMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.3 })
+    // );
+    //group.add(mesh);
 
     // Create the HTML container
     const div = document.createElement('div');
     div.className = 'landing-label'; 
     
     div.innerHTML = `
-        <h1>Hi, my name is <span>${name}</span></h1>
-        <p>Welcome to my interactive portfolio.</p>
+        
         <div class="controls-instruction" id="controls-box">
+            <p class="welcome-text">Welcome to my interactive portfolio.</p>
             <p>Move around and explore:</p>
             <div class="keys-container">
                 <div class="key-badge" id="key-w">W</div>

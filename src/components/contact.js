@@ -11,7 +11,10 @@ export function createContactNode(scene, x, z) {
     // Use a complex Torus Knot for the communication node
     const mesh = new THREE.Mesh(
         new THREE.TorusKnotGeometry(0.5, 0.15, 64, 8),
-        new THREE.MeshStandardMaterial({ color: 0x00ff00, wireframe: true })
+        new THREE.MeshStandardMaterial({ color: 0x00ff00,
+                     emissive: 0x00ffff,       // The actual glowing neon color (Cyan)
+         emissiveIntensity: 1.0,   // Crank this up! (Try 2 to 5)  
+            wireframe: true })
     );
     group.add(mesh);
 

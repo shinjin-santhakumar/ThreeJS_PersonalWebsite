@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { color } from 'three/tsl';
 
 const interactiveExperiences = [];
 const interactiveProjects = []; 
@@ -14,7 +15,11 @@ export function createExperienceNode(scene, role, company, description, x, z) {
     // Use an Octahedron (Diamond) for variety
     const mesh = new THREE.Mesh(
         new THREE.OctahedronGeometry(0.8),
-        new THREE.MeshStandardMaterial({ color: 0x00ff00, wireframe: true })
+        
+        new THREE.MeshStandardMaterial({ color: 0x00ff00, 
+                 emissive: 0x00ffff,       // The actual glowing neon color (Cyan)
+         emissiveIntensity: 2.0,   // Crank this up! (Try 2 to 5)     
+        wireframe: true })
     );
     group.add(mesh);
 
@@ -47,12 +52,16 @@ export function createExperienceNode(scene, role, company, description, x, z) {
 }
 
 
-export function createProjectNode(scene, title, description, x, z) {
+export function createProjectNode(scene, title, description, x, z, link, playable = "") {
     const group = new THREE.Group();
     group.position.set(x, 0.5, z); 
 
     const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshStandardMaterial({ color: 0x00ffff, wireframe: true });
+    const material = new THREE.MeshStandardMaterial({
+         color: 0x00ffff,
+         emissive: 0x00ffff,       // The actual glowing neon color (Cyan)
+         emissiveIntensity: 2.0,   // Crank this up! (Try 2 to 5) 
+         wireframe: true });
     const mesh = new THREE.Mesh(geometry, material);
     group.add(mesh);
 
@@ -64,8 +73,15 @@ export function createProjectNode(scene, title, description, x, z) {
     div.innerHTML = `
         <div class="terminal-header">root@system:~/projects$ ./view.sh</div>
         <div class="terminal-body"></div><span class="cursor-blink">_</span>
-        <button class="github-btn" hidden>View on GitHub</button>
+        <button class="github-btn" onclick="window.open('${link}', '_blank')" hidden>View on GitHub</button>
     `;
+
+    if (playable != "") {
+        div.innerHTML += `
+            <button class="play-btn" onclick="window.open('${playable}', '_blank')" hidden>Play</button>
+        `;
+    }
+
     //<button>View on GitHub</button>
     const label = new CSS2DObject(div);
     label.position.set(0, 1.5, 0); 
@@ -78,30 +94,68 @@ export function createProjectNode(scene, title, description, x, z) {
         textBody: div.querySelector('.terminal-body'),
         fullText: fullText,
         button: div.querySelector('.github-btn'),
+        button2: div.querySelector('.play-btn'),
         wasActive: false,
         typeTimer: null
     });
 }
 
-export function createHobbyNode(scene, title, description, x, z) {
+export function createHobbyNode(scene, title, description, x, z, images = [], customModel = null) {
     // TODO
     const group = new THREE.Group();
     group.position.set(x, 0.5, z); 
 
-    const geometry = new THREE.IcosahedronGeometry(1, 0);
-    const material = new THREE.MeshStandardMaterial({ color: 0x00ffff, wireframe: true });
+    let geometry = new THREE.IcosahedronGeometry(1, 0);
+    let material = new THREE.MeshStandardMaterial({ color: 0x00ffff, 
+                 emissive: 0x00ffff,       // The actual glowing neon color (Cyan)
+         emissiveIntensity: 2.0,   // Crank this up! (Try 2 to 5)  
+        wireframe: true });
+
+    if (customModel != null) {
+        console.log('Using custom model');
+        geometry = customModel;
+        material = new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true });
+    }
+    
     const mesh = new THREE.Mesh(geometry, material);
     group.add(mesh);
-
-
 
     const div = document.createElement('div');
     div.className = 'experience-label'; 
 
+    // 1. Build the image carousel HTML if images are provided
+    let imagesHtml = '';
+    if (images.length > 0) {
+        // Generate image tags. Duplicating the list once creates a seamless infinite scroll effect.
+        const imgTags = images.map(src => `<img src="${src}" style="height: 80px; object-fit: cover; border-radius: 4px;" />`).join('');
+        imagesHtml = `
+            <div class="image-carousel" style="overflow: hidden; width: 100%; margin-top: 10px;">
+                <div class="image-track" style="display: flex; gap: 10px; width: max-content;">
+                    ${imgTags}
+                    ${imgTags} 
+                </div>
+            </div>
+        `;
+    }
+
     div.innerHTML = `
         <div class="terminal-header">root@system:~/hobbies$ ./view.sh</div>
         <div class="terminal-body"></div><span class="cursor-blink">_</span>
+        ${imagesHtml}
     `;
+
+    // 2. Start the scrolling animation if the track exists
+    const imageTrack = div.querySelector('.image-track');
+    if (imageTrack) {
+        imageTrack.animate([
+            { transform: 'translateX(0)' },
+            { transform: 'translateX(calc(-50% - 5px))' } // Shifts exactly one set of images (accounting for the 10px gap)
+        ], {
+            duration: images.length * 2000, // Adjust speed based on how many images there are
+            iterations: Infinity,
+            easing: 'linear'
+        });
+    }
 
     const fullText = `> Hobby: ${title}\n> Description: ${description}`;
 
@@ -111,10 +165,14 @@ export function createHobbyNode(scene, title, description, x, z) {
     group.add(label);
 
     scene.add(group);
+    
+    // 3. Added the image track and images array to the pushed object
     interactiveHobbies.push({ 
         group, 
         htmlElement: div,
         textBody: div.querySelector('.terminal-body'),
+        imageTrack: imageTrack, 
+        images: images,         
         fullText: fullText,
         wasActive: false,
         typeTimer: null
@@ -127,7 +185,10 @@ export function createResumeNode(scene, resumeUrl, description, x, z) {
 
     // A unique shape for the Resume node
     const geometry = new THREE.DodecahedronGeometry(0.8);
-    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00, wireframe: true });
+    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00,
+                 emissive: 0x00ffff,       // The actual glowing neon color (Cyan)
+         emissiveIntensity: 2.0,   // Crank this up! (Try 2 to 5) 
+        wireframe: true });
     const mesh = new THREE.Mesh(geometry, material);
     group.add(mesh);
 
@@ -242,6 +303,10 @@ async function checkProximity(player, object) {
                 if (object.button) {
                     object.button.hidden = false;
                 }
+
+                if(object.button2){
+                    object.button2.hidden = false;
+                }
                 //object.button.hidden = false;
             }
         } else {
@@ -255,6 +320,10 @@ async function checkProximity(player, object) {
                 stopTyping(object);
                 if (object.button) {
                     object.button.hidden = true;
+                }
+
+                if(object.button2){
+                    object.button2.hidden = true;
                 }
             }
         }

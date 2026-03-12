@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypted Resume</title>
+    <style>
+        /* This removes the "phantom" padding/margins */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevents double scrollbars */
+            background-color: #000; /* Keeps the hacker vibe if the PDF loads slow */
+        }
+
+        iframe {
+            display: block; /* Removes tiny extra space at the bottom */
+            border: none;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <iframe src="/ShinjinSanthakumarResume2026.pdf#toolbar=0"></iframe>
+    <script type="module" src="/src/resume.js"></script>
+</body>
+</html>
