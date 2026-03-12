@@ -19,7 +19,7 @@ import { SkyText } from './SkyText.js';
 // 1. Setup the Loader and Asset List
 const loader = new GLTFLoader();
 const ASSETS = {
-    barbell: '/models/barbell.glb',
+    // barbell: '/models/barbell.glb',
     // add others here if needed
 };
 
