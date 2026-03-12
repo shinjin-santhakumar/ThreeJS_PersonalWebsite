@@ -11,6 +11,7 @@ export const player = new THREE.Mesh(
     })
 );
 player.position.y = radius;
+player.position.z = 3;
 player.castShadow = true;
 
 // Private variables (only accessible inside this file)
