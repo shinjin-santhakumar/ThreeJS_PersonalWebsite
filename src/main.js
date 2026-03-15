@@ -105,7 +105,7 @@ async function init() {
     createProjectNode(scene, "Kickstart analytics", "Ultized Flask to create anaytics of successful kickstarter campaigns", 15, -5, 'https://github.com/shinjin-santhakumar/Client-Server-App');
 
 
-    createExperienceNode(scene, "Software Engineer Intern", "Appriss Retail", "Worked as .NET develolper for a SaaS company", 8, -14);
+    createExperienceNode(scene, "Software Engineer Intern", "Appriss Retail", "Worked as .NET developer for a SaaS company", 8, -14);
     createExperienceNode(scene, "Web Developer", "Nexxon Inc.", "Created a new webpage for a small company.", 12, -14);
 
 
