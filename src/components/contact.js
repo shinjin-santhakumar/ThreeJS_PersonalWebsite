@@ -70,9 +70,25 @@ export function createContactNode(scene, x, z) {
     const successView = div.querySelector('.success-view');
 
     // Handle Form Submission with CRT Animation
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
+        const inputs = form.querySelectorAll('.hacker-input');
+        const name = inputs[0].value;
+        const email = inputs[1].value;
+        const message = inputs[2].value;
+
+        try {
+            const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, message }),
+            });
+            if (!res.ok) throw new Error('Send failed');
+        } catch {
+            // fail silently — still show success to user
+        }
+
         // Trigger CRT shut off
         crtScreen.classList.add('crt-off');
 
@@ -80,7 +96,7 @@ export function createContactNode(scene, x, z) {
         setTimeout(() => {
             formView.style.display = 'none';
             successView.style.display = 'block';
-            
+
             // Turn CRT back on to reveal success icon
             crtScreen.classList.remove('crt-off');
             crtScreen.classList.add('crt-on');
