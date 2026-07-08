@@ -24,6 +24,12 @@ const maxSpeed = 0.5;
 export function initControls() {
     window.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
     window.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
+
+    // Alt-tabbing (or any focus loss) doesn't fire keyup, so held keys get stuck "down".
+    // Release everything once the window loses focus.
+    window.addEventListener('blur', () => {
+        for (const key in keys) keys[key] = false;
+    });
 }
 
 export function updatePlayer(camera) {

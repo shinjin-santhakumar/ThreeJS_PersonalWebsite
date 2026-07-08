@@ -98,30 +98,28 @@ async function init() {
 
 
     createProjectNode(scene, "Steamdle: Guess the game", "Created a game similar to wordle but for Steam games", 5, -5, 'https://github.com/shinjin-santhakumar/Steamdle-frontend', 'https://steamdle-frontend.vercel.app/');
-
     createProjectNode(scene, "Frozen Frontier", "A Unity game made for a game jam", 10, -5, 'https://github.com/shinjin-santhakumar/LunarJam2023' , 'https://thegreenphoenix.itch.io/ff');
-
-
     createProjectNode(scene, "Kickstart analytics", "Ultized Flask to create anaytics of successful kickstarter campaigns", 15, -5, 'https://github.com/shinjin-santhakumar/Client-Server-App');
 
 
-    createExperienceNode(scene, "Software Engineer Intern", "Appriss Retail", "Worked as .NET developer for a SaaS company", 8, -14);
-    createExperienceNode(scene, "Web Developer", "Nexxon Inc.", "Created a new webpage for a small company.", 12, -14);
+    createExperienceNode(scene, "Softwawre Test Engineer", "Becton Dickenson" , "Ultized Squish and Python to create automatated and manual test cases", 6, -14)
+    createExperienceNode(scene, "Software Engineer Intern", "Appriss Retail", "Worked as .NET developer for a SaaS company", 10, -14);
+    createExperienceNode(scene, "Web Developer", "Nexxon Inc.", "Created a new webpage for a small company.", 14, -14);
+    
 
 
     const gameImages = Array.from({ length: 9}, (_, i) => `/games/game${i + 1}.jpg`);
     createHobbyNode(scene, "Gaming", "Favorite games of all time", -15 , -5, gameImages);
-
     const gymImages = Array.from({ length: 5}, (_, i) => `/gym/gym${i + 1}.jpg`);
-    createHobbyNode(scene, "Gyming", "Goated machines", -10 , -5, gymImages);
-
-
+    createHobbyNode(scene, "Gyming", "Goated machines", -20 , -5, gymImages);
     const bookImages = Array.from({ length: 8}, (_, i) => `/books/book${i + 1}.jpg`);
-    createHobbyNode(scene, "Reading", "Some of my favorite books", -5 , -5, bookImages);
+    createHobbyNode(scene, "Reading", "Some of my favorite books", -10 , -5, bookImages);
+
+    createHobbyNode(scene, "FPV Drones", "One of my first flights", -5 , -5, [], "/drones/flight1.mp4")
+
+
 
     createResumeNode(scene, "/resume" , "Resume" , 0, -19);
-
-
     createContactNode(scene, -10, -14);
 
 

@@ -100,7 +100,7 @@ export function createProjectNode(scene, title, description, x, z, link, playabl
     });
 }
 
-export function createHobbyNode(scene, title, description, x, z, images = [], customModel = null) {
+export function createHobbyNode(scene, title, description, x, z, images = [], video = null, customModel = null) {
     // TODO
     const group = new THREE.Group();
     group.position.set(x, 0.5, z); 
@@ -123,16 +123,20 @@ export function createHobbyNode(scene, title, description, x, z, images = [], cu
     const div = document.createElement('div');
     div.className = 'experience-label'; 
 
-    // 1. Build the image carousel HTML if images are provided
-    let imagesHtml = '';
-    if (images.length > 0) {
+    // 1. Build the media HTML: a looping video takes priority over the image carousel
+    let mediaHtml = '';
+    if (video) {
+        mediaHtml = `
+            <video class="hobby-video" src="${video}" style="width: 100%; margin-top: 10px; border-radius: 4px; border: 1px solid #00ff00;" controls muted loop playsinline></video>
+        `;
+    } else if (images.length > 0) {
         // Generate image tags. Duplicating the list once creates a seamless infinite scroll effect.
         const imgTags = images.map(src => `<img src="${src}" style="height: 80px; object-fit: cover; border-radius: 4px;" />`).join('');
-        imagesHtml = `
+        mediaHtml = `
             <div class="image-carousel" style="overflow: hidden; width: 100%; margin-top: 10px;">
                 <div class="image-track" style="display: flex; gap: 10px; width: max-content;">
                     ${imgTags}
-                    ${imgTags} 
+                    ${imgTags}
                 </div>
             </div>
         `;
@@ -141,7 +145,7 @@ export function createHobbyNode(scene, title, description, x, z, images = [], cu
     div.innerHTML = `
         <div class="terminal-header">root@system:~/hobbies$ ./view.sh</div>
         <div class="terminal-body"></div><span class="cursor-blink">_</span>
-        ${imagesHtml}
+        ${mediaHtml}
     `;
 
     // 2. Start the scrolling animation if the track exists
@@ -157,22 +161,25 @@ export function createHobbyNode(scene, title, description, x, z, images = [], cu
         });
     }
 
+    const videoEl = div.querySelector('.hobby-video');
+
     const fullText = `> Hobby: ${title}\n> Description: ${description}`;
 
     //<button>View on GitHub</button>
     const label = new CSS2DObject(div);
-    label.position.set(0, 1.5, 0); 
+    label.position.set(0, 1.5, 0);
     group.add(label);
 
     scene.add(group);
-    
-    // 3. Added the image track and images array to the pushed object
-    interactiveHobbies.push({ 
-        group, 
+
+    // 3. Added the image track, video element, and images array to the pushed object
+    interactiveHobbies.push({
+        group,
         htmlElement: div,
         textBody: div.querySelector('.terminal-body'),
-        imageTrack: imageTrack, 
-        images: images,         
+        imageTrack: imageTrack,
+        images: images,
+        video: videoEl,
         fullText: fullText,
         wasActive: false,
         typeTimer: null
@@ -223,9 +230,17 @@ export function createResumeNode(scene, resumeUrl, description, x, z) {
     popoutBtn.addEventListener('click', () => window.open(resumeUrl, '_blank'));
 
     // Expand toggles a CSS class to make the CSS2DObject bigger
+    const resumeIframe = div.querySelector('.hacker-iframe');
     expandBtn.addEventListener('click', () => {
         div.classList.toggle('expanded');
         expandBtn.textContent = div.classList.contains('expanded') ? 'Collapse' : 'Expand';
+
+        // Chrome's built-in PDF viewer doesn't reflow itself when the iframe box
+        // is resized via CSS - it only redraws on a window resize. Nudge it once
+        // the height transition finishes so the PDF actually fills the new size.
+        resumeIframe.addEventListener('transitionend', () => {
+            window.dispatchEvent(new Event('resize'));
+        }, { once: true });
     });
 
     interactiveResumes.push({ 
@@ -308,6 +323,11 @@ async function checkProximity(player, object) {
                     object.button2.hidden = false;
                 }
                 //object.button.hidden = false;
+
+                if (object.video) {
+                    object.video.currentTime = 0;
+                    object.video.play().catch(() => {});
+                }
             }
         } else {
             // Slow idle spin
@@ -324,6 +344,10 @@ async function checkProximity(player, object) {
 
                 if(object.button2){
                     object.button2.hidden = true;
+                }
+
+                if (object.video) {
+                    object.video.pause();
                 }
             }
         }
