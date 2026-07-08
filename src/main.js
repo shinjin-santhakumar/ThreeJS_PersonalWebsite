@@ -115,7 +115,14 @@ async function init() {
     const bookImages = Array.from({ length: 8}, (_, i) => `/books/book${i + 1}.jpg`);
     createHobbyNode(scene, "Reading", "Some of my favorite books", -10 , -5, bookImages);
 
-    createHobbyNode(scene, "FPV Drones", "One of my first flights", -5 , -5, [], "/drones/flight1.mp4")
+    const droneVideos = [
+        "https://ymhovinkamf5khos.private.blob.vercel-storage.com/part1.mp4?vercel-blob-valid-until=1783498591919&vercel-blob-delegation=eyJzdG9yZUlkIjoic3RvcmVfeU1IT3ZpTmtBbWY1S0hPcyIsIm93bmVySWQiOiJ0ZWFtX2NreEZTblJSakRoNllBV3B2enBWSUw1aCIsInBhdGhuYW1lIjoiKiIsIm9wZXJhdGlvbnMiOlsiZ2V0IiwiaGVhZCJdLCJ2YWxpZFVudGlsIjoxNzgzNTQxNjUwOTcyLCJpYXQiOjE3ODM0OTg0NDM1OTh9.rVqcRqB5rWKC3IkLK7MSVKvV2zmwB6s0OAbNKH1ben8&vercel-blob-signature=rnvJwueh1_a9AGDliCzjCZ--pbtUpbiykpWZMwjIGxQ",
+        "https://ymhovinkamf5khos.private.blob.vercel-storage.com/part2-1.mp4?vercel-blob-valid-until=1783498639856&vercel-blob-delegation=eyJzdG9yZUlkIjoic3RvcmVfeU1IT3ZpTmtBbWY1S0hPcyIsIm93bmVySWQiOiJ0ZWFtX2NreEZTblJSakRoNllBV3B2enBWSUw1aCIsInBhdGhuYW1lIjoiKiIsIm9wZXJhdGlvbnMiOlsiZ2V0IiwiaGVhZCJdLCJ2YWxpZFVudGlsIjoxNzgzNTQxNjUwOTcyLCJpYXQiOjE3ODM0OTg0NDM1OTh9.rVqcRqB5rWKC3IkLK7MSVKvV2zmwB6s0OAbNKH1ben8&vercel-blob-signature=KNnU5KeJeQu9Fyttga0qch_jmzLdmfDapmz6VF4EKEw",
+        "https://ymhovinkamf5khos.private.blob.vercel-storage.com/part2-2.mp4?vercel-blob-valid-until=1783498647819&vercel-blob-delegation=eyJzdG9yZUlkIjoic3RvcmVfeU1IT3ZpTmtBbWY1S0hPcyIsIm93bmVySWQiOiJ0ZWFtX2NreEZTblJSakRoNllBV3B2enBWSUw1aCIsInBhdGhuYW1lIjoiKiIsIm9wZXJhdGlvbnMiOlsiZ2V0IiwiaGVhZCJdLCJ2YWxpZFVudGlsIjoxNzgzNTQxNjUwOTcyLCJpYXQiOjE3ODM0OTg0NDM1OTh9.rVqcRqB5rWKC3IkLK7MSVKvV2zmwB6s0OAbNKH1ben8&vercel-blob-signature=nqlEkgu6OsrOzhgwL12BmTsY6Ext4iTNMyiYD7uyuos",
+        "https://ymhovinkamf5khos.private.blob.vercel-storage.com/part3-1.mp4?vercel-blob-valid-until=1783498661721&vercel-blob-delegation=eyJzdG9yZUlkIjoic3RvcmVfeU1IT3ZpTmtBbWY1S0hPcyIsIm93bmVySWQiOiJ0ZWFtX2NreEZTblJSakRoNllBV3B2enBWSUw1aCIsInBhdGhuYW1lIjoiKiIsIm9wZXJhdGlvbnMiOlsiZ2V0IiwiaGVhZCJdLCJ2YWxpZFVudGlsIjoxNzgzNTQxNjUwOTcyLCJpYXQiOjE3ODM0OTg0NDM1OTh9.rVqcRqB5rWKC3IkLK7MSVKvV2zmwB6s0OAbNKH1ben8&vercel-blob-signature=zN1F2Ym_vOAXIQ5NSyZSDGjWr-5nD6LMo5VywRdlhhk",
+        "https://ymhovinkamf5khos.private.blob.vercel-storage.com/part3-2.mp4?vercel-blob-valid-until=1783498672890&vercel-blob-delegation=eyJzdG9yZUlkIjoic3RvcmVfeU1IT3ZpTmtBbWY1S0hPcyIsIm93bmVySWQiOiJ0ZWFtX2NreEZTblJSakRoNllBV3B2enBWSUw1aCIsInBhdGhuYW1lIjoiKiIsIm9wZXJhdGlvbnMiOlsiZ2V0IiwiaGVhZCJdLCJ2YWxpZFVudGlsIjoxNzgzNTQxNjUwOTcyLCJpYXQiOjE3ODM0OTg0NDM1OTh9.rVqcRqB5rWKC3IkLK7MSVKvV2zmwB6s0OAbNKH1ben8&vercel-blob-signature=Wonoua3jnKOX6zlb-4W0XZsmsDNN9HAkrWDwQcu0yGI",
+    ];
+    createHobbyNode(scene, "FPV Drones", "One of my first flights", -5 , -5, [], droneVideos)
 
 
 

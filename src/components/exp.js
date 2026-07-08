@@ -123,11 +123,14 @@ export function createHobbyNode(scene, title, description, x, z, images = [], vi
     const div = document.createElement('div');
     div.className = 'experience-label'; 
 
-    // 1. Build the media HTML: a looping video takes priority over the image carousel
+    // 1. Build the media HTML: video (single or playlist) takes priority over the image carousel
+    const videoList = Array.isArray(video) ? video : (video ? [video] : []);
     let mediaHtml = '';
-    if (video) {
+    if (videoList.length > 0) {
+        // A single video loops itself; a playlist advances clip-to-clip instead (see 'ended' listener below).
+        const loopAttr = videoList.length === 1 ? 'loop' : '';
         mediaHtml = `
-            <video class="hobby-video" src="${video}" style="width: 100%; margin-top: 10px; border-radius: 4px; border: 1px solid #00ff00;" controls muted loop playsinline></video>
+            <video class="hobby-video" src="${videoList[0]}" style="width: 100%; margin-top: 10px; border-radius: 4px; border: 1px solid #00ff00;" controls muted ${loopAttr} playsinline></video>
         `;
     } else if (images.length > 0) {
         // Generate image tags. Duplicating the list once creates a seamless infinite scroll effect.
@@ -172,18 +175,31 @@ export function createHobbyNode(scene, title, description, x, z, images = [], vi
 
     scene.add(group);
 
-    // 3. Added the image track, video element, and images array to the pushed object
-    interactiveHobbies.push({
+    // 3. Added the image track, video element/playlist, and images array to the pushed object
+    const hobbyEntry = {
         group,
         htmlElement: div,
         textBody: div.querySelector('.terminal-body'),
         imageTrack: imageTrack,
         images: images,
         video: videoEl,
+        videoList: videoList,
+        videoIndex: 0,
         fullText: fullText,
         wasActive: false,
         typeTimer: null
-    });
+    };
+
+    // Advance to the next clip when one ends (only relevant for a multi-clip playlist)
+    if (videoEl && videoList.length > 1) {
+        videoEl.addEventListener('ended', () => {
+            hobbyEntry.videoIndex = (hobbyEntry.videoIndex + 1) % videoList.length;
+            videoEl.src = videoList[hobbyEntry.videoIndex];
+            videoEl.play().catch(() => {});
+        });
+    }
+
+    interactiveHobbies.push(hobbyEntry);
 }
 
 export function createResumeNode(scene, resumeUrl, description, x, z) {
@@ -325,6 +341,10 @@ async function checkProximity(player, object) {
                 //object.button.hidden = false;
 
                 if (object.video) {
+                    if (object.videoList && object.videoList.length > 1) {
+                        object.videoIndex = 0;
+                        object.video.src = object.videoList[0];
+                    }
                     object.video.currentTime = 0;
                     object.video.play().catch(() => {});
                 }
